@@ -2,3 +2,5 @@ venv/
 __pycache__/
 *.pyc
 .streamlit/secrets.toml
+data/*.csv
+resume_vectors.pkl
