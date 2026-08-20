@@ -10,6 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import PyPDF2
 import docx2txt
 
+
 # ---------------- Page setup ----------------
 st.set_page_config(page_title="📜AI Resume Screening System", layout="wide")
 st.title(" AI-Based Resume Screening System")
@@ -33,7 +34,9 @@ def load_resources():
     return df, vectorizer, resume_vectors, classifier_model, classifier_vectorizer
 
 df, vectorizer, resume_vectors, classifier_model, classifier_vectorizer = load_resources()
-
+import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
 stop_words = set(stopwords.words("english"))
 lemmatizer = WordNetLemmatizer()
 
