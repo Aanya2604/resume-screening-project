@@ -421,4 +421,4 @@ def normalize_skill_text(text):
 def skill_pattern(skill):
     escaped = re.escape(skill.lower())
     escaped = escaped.replace(r"\ ", r"\s+")
-    return rf"(?<![a-z0-9]){escaped}(?
+    return rf"(?<![a-z0-9]){escaped}(?![a-z0-9])"
