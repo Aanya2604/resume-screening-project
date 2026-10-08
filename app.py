@@ -322,12 +322,14 @@ if "uploaded_history" not in st.session_state:
 def load_resources():
     try:
         data_path = BASE_DIR / "data" / "cleaned_resumes.csv"
+        df = pd.read_csv(data_path)
+        df["cleaned_resume"] = df["cleaned_resume"].fillna("")
 
         with open(BASE_DIR / "vectorizer.pkl", "rb") as f:
             vectorizer = pickle.load(f)
 
-        with open(BASE_DIR / "resume_vectors.pkl", "rb") as f:
-            resume_vectors = pickle.load(f)
+        # Dynamically compute vectors instead of loading heavy .pkl file
+        resume_vectors = vectorizer.transform(df["cleaned_resume"])
 
         with open(BASE_DIR / "classifier_model.pkl", "rb") as f:
             classifier_model = pickle.load(f)
@@ -335,15 +337,9 @@ def load_resources():
         with open(BASE_DIR / "classifier_vectorizer.pkl", "rb") as f:
             classifier_vectorizer = pickle.load(f)
 
-        df = pd.read_csv(data_path)
-        df["cleaned_resume"] = df["cleaned_resume"].fillna("")
-
         return df, vectorizer, resume_vectors, classifier_model, classifier_vectorizer, True, ""
     except Exception as exc:
         return pd.DataFrame(), None, None, None, None, False, str(exc)
-
-
-df, vectorizer, resume_vectors, classifier_model, classifier_vectorizer, ENGINE_READY, ENGINE_ERROR = load_resources()
 
 
 # ============================================================
