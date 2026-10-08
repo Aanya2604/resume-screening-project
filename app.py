@@ -786,4 +786,8 @@ elif selected_page.startswith("📤"):
 
             rows.append({
                 "Candidate File": file.name,
-                "Duplicate Status": "⚠️ Duplicate Detected" if is_duplicate else "
+                "Duplicate Status": "⚠️ Duplicate Detected" if is_duplicate else "✅ Unique",
+                "Quality Score": f"{quality_score}/100",
+                "Detected Skills": ", ".join(skills[:6]) if skills else "None",
+                "Suggestions": "; ".join(suggestions),
+            })
