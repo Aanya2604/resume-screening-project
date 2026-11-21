@@ -1007,5 +1007,5 @@ else:
     st.markdown("""
     * **Student Name / Enrollment:** Aanya J.P. — `03618011623`
     * **Guide:** Dr. Preeti Raj Verma
-    * **Live Deployment:** [Resume Screening Project on Streamlit](https://resume-screening-project-nve8tqnbubttutfpdy8ddv.streamlit.app/)[cite: 2]
+    * **Live Deployment:** [Resume Screening Project on Streamlit](https://resume-screening-project-nve8tqnbubttutfpdy8ddv.streamlit.app/)
     """, unsafe_allow_html=True)
