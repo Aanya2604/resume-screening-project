@@ -923,24 +923,34 @@ elif selected_page.startswith("📊"):
         """,
         unsafe_allow_html=True,
     )
-
+    default_jd = st.session_state.get("active_jd", "We are looking for a Machine Learning Engineer with Python, Scikit-learn, Pandas, and SQL experience.")
+    jd = st.text_area("Job Description to compare against", value=default_jd, height=120)
     selected_ids = st.multiselect("Select Candidate IDs to Compare", options=df["ID"].tolist(), default=df["ID"].tolist()[:3])
 
-    if selected_ids:
+    if selected_ids and jd.strip():
+        jd_vec = vectorizer.transform([clean_text(jd)])
+        job_skills = extract_skills(jd)
         comp_rows = []
         for cid in selected_ids:
-            row = df[df["ID"] == cid].iloc[0]
+            i = int(df.index[df["ID"] == cid][0])
+            cos = float(cosine_similarity(jd_vec, resume_vectors[i]).flatten()[0])
+            c_skills = set(resume_skill_lists[i]) if i < len(resume_skill_lists) else set()
+            matched = [s for s in job_skills if s in c_skills]
+            coverage = len(matched) / len(job_skills) if job_skills else 0.0
+            comp = compute_component_scores(cos, coverage, df.iloc[i]["cleaned_resume"])
             comp_rows.append({
                 "Candidate ID": cid,
-                "Domain Category": row["Category"],
-                "Skills Match": "88%",
-                "Experience Match": "80%",
-                "Education Match": "95%",
-                "Project Score": "85%",
-                "Overall Match": "87%",
+                "Domain Category": df.iloc[i]["Category"],
+                "Skills Match": comp["Technical Skills"],
+                "Matched Skills": f"{len(matched)} of {len(job_skills)}",
+                "TF-IDF Similarity": f"{cos:.0%}",
+                "Experience Match": comp["Experience"],
+                "Education Match": comp["Education"],
+                "Project Score": comp["Projects"],
+                "Overall Match": f"{comp['Overall']}%",
             })
+        comp_rows.sort(key=lambda r: int(r["Overall Match"].rstrip("%")), reverse=True)
         st.dataframe(pd.DataFrame(comp_rows), use_container_width=True, hide_index=True)
-
 
 # ============================================================
 # RECRUITMENT PIPELINE
@@ -1006,6 +1016,5 @@ else:
     )
     st.markdown("""
     * **Student Name / Enrollment:** Aanya J.P. — `03618011623`
-    * **Guide:** Dr. Preeti Raj Verma
-    * **Live Deployment:** [Resume Screening Project on Streamlit](https://resume-screening-project-nve8tqnbubttutfpdy8ddv.streamlit.app/)
-    """, unsafe_allow_html=True)
+* **Guide:** Dr. Preeti Raj Verma
+* **Live Deployment:** [Resume Screening Project on Streamlit](https://resume-screening-project-nve8tqnbubttutfpdy8ddv.streamlit.app/)
